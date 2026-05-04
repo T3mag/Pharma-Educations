@@ -1,0 +1,4 @@
+[autorun]
+OPEN=Support\ShelExec ..\..\index.htm
+[autorun.x86]
+OPEN=Support\ShelExec ..\..\index.htm

@@ -1,0 +1,4 @@
+python3 /Users/arturminnusin/Desktop/Диплом/RAG/app.py ask --query "Авамис противопоказания"
+python3 /Users/arturminnusin/Desktop/Диплом/RAG/app.py find-all-ask --query "парацетамол"
+python3 /Users/arturminnusin/Desktop/Диплом/RAG/app.py generate-questions --query "парацетамол" --count 3 --with-answers
+python3 /Users/arturminnusin/Desktop/Диплом/RAG/app.py ask --query "Лекарство от боли в горле"
