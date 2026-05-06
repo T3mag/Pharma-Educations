@@ -2,7 +2,13 @@ import UIKit
 
 final class RegistartionView: UIView {
     
-    var onRegisterTap: (() -> Void)?
+    var onRegisterTap: ((_ email: String,
+                         _ password: String,
+                         _ confirmPassword: String,
+                         _ surname: String,
+                         _ name: String,
+                         _ lastName: String,
+                         _ birtday: String) -> Void)?
     
     private lazy var registrationButtonContainer: UIView = AuxiliaryUIViews.stackViewContainer
     
@@ -305,7 +311,9 @@ final class RegistartionView: UIView {
             birthdateTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
             passwordTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
             confirmPasswordTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
+            
             registartionButton.widthAnchor.constraint(equalTo: rootStackView.widthAnchor, multiplier: 0.8),
+            registartionButton.heightAnchor.constraint(equalToConstant: Constants.Registration.heightButton),
             registartionButton.centerXAnchor.constraint(equalTo: registrationButtonContainer.centerXAnchor),
             registartionButton.topAnchor.constraint(equalTo: registrationButtonContainer.topAnchor),
             registartionButton.bottomAnchor.constraint(equalTo: registrationButtonContainer.bottomAnchor)
@@ -350,7 +358,16 @@ final class RegistartionView: UIView {
     
     @objc
     private func registrationButtonTapped() {
-        onRegisterTap?()
+        onRegisterTap?(
+            emailTextField.text ?? "",
+            passwordTextField.text ?? "",
+            confirmPasswordTextField.text ?? "",
+            surnameTextField.text ?? "",
+            nameTextField.text ?? "",
+            lastnameTextField.text ?? "",
+            birthdateTextField.text ?? ""
+            
+        )
     }
         
 }

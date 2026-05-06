@@ -2,7 +2,8 @@ import UIKit
 
 final class LoginView: UIView {
     
-    var onLoginTap: (() -> Void)?
+    var onLoginTap: ((_ email: String,
+                      _ password: String) -> Void)?
     var onRegisterTap: (() -> Void)?
     
     private lazy var loginButtonContainer: UIView = AuxiliaryUIViews.stackViewContainer
@@ -152,6 +153,7 @@ final class LoginView: UIView {
             loginTextField.heightAnchor.constraint(equalToConstant: Constants.Login.heightTextField),
 
             loginButton.widthAnchor.constraint(equalTo: rootStackView.widthAnchor, multiplier: 0.8),
+            loginButton.heightAnchor.constraint(equalToConstant: Constants.Login.heightButton),
             loginButton.centerXAnchor.constraint(equalTo: loginButtonContainer.centerXAnchor),
             loginButton.topAnchor.constraint(equalTo: loginButtonContainer.topAnchor),
             loginButton.bottomAnchor.constraint(equalTo: loginButtonContainer.bottomAnchor)
@@ -174,13 +176,17 @@ final class LoginView: UIView {
         centreStackView.addArrangedSubview(registrButton)
     }
     
-    @objc private func loginButtonTapped() {
-        onLoginTap?()
+    @objc
+    private func loginButtonTapped() {
+        onLoginTap?(loginTextField.text ?? "",
+                    passwordTextField.text ?? "")
     }
     
-    @objc private func registrationButtonTapped() {
+    @objc
+    private func registrationButtonTapped() {
         onRegisterTap?()
     }
+    
 }
 
 

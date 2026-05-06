@@ -1,10 +1,17 @@
 import UIKit
 
 enum Texts {
+    enum Errors {
+        static let unknownError = "Что-то пошло не так, попробуйте позже"
+        static let emptyString = "Поле не должно быть пустым"
+        static let invalidEmail = "Некорректный email"
+        static let passwordNoMatched = "Пароли не совпадают"
+    }
+    
     enum Login {
         static let title = "Привет, чтобы начать работу, необходимо авторизоваться"
         static let loginHeader = "Логин"
-        static let loginPlaceholder = "Введите login"
+        static let loginPlaceholder = "Введите логин"
         static let passwordHeader = "Пароль"
         static let passwordPlaceholder = "Введите пароль"
         static let registrationButton = "Нет акккаунта? \n Зарегистрироваться"
@@ -30,6 +37,7 @@ enum Texts {
         static let passwordPlaceholder = "Введите пароль"
         static let repeatpasswordPlaceholder = "Повторите пароль"
         static let registrationButton = "Зарегистрироваться"
+        static let emailPattern = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
     }
 }
 
