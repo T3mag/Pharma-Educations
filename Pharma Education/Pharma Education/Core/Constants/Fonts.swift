@@ -11,4 +11,8 @@ enum Fonts {
         static let title: UIFont = .systemFont(ofSize: 32, weight: .bold)
         static let registrationButtonFont: UIFont = .systemFont(ofSize: 16, weight: .regular)
     }
+    
+    enum ChatAI {
+        static let title: UIFont = .systemFont(ofSize: 32, weight: .bold)
+    }
 }

@@ -39,5 +39,30 @@ enum Texts {
         static let registrationButton = "Зарегистрироваться"
         static let emailPattern = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
     }
+    
+    enum TabBar {
+        static let simulatorTitle = "Симуляторы"
+        static let simulatorIcon = "cross.case"
+        static let selectedeSimulatorIcon = "cross.case.fill"
+        
+        static let gamesAndTestsTitle = "Игры и тесты"
+        static let gamesAndTestsIcon = "checklist"
+        static let selectedGamesAndTestsIcon = "checklist"
+        
+        static let chatWithAiTitile = "чат с AI"
+        static let chatWithAIIcon = "bubble.left.and.bubble.right"
+        static let selectedChatWithAiIcon = "bubble.left.and.bubble.right.fill"
+        
+        static let accountTitle = "Аккаунт"
+        static let accountIcon = "person.crop.circle"
+        static let selectedAccountIcon = "person.crop.circle.fill"
+        
+    }
+    
+    enum ChatWithAi {
+        static let screenTitle = "Чат с ИИ"
+        static let centerText = "Есть вопрос по лекартсву? Задай его ИИ и получи ответ"
+        static let messegeInputPlaceholder = "Введите свой вопрос" 
+    }
 }
 
