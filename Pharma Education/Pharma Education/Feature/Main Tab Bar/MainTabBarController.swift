@@ -13,36 +13,33 @@ final class MainTabBarController: UITabBarController {
         simulatorsVC.view.backgroundColor = .systemBackground
         let gamesAndTestsVC = UIViewController()
         gamesAndTestsVC.view.backgroundColor = .systemBackground
-        let chatWithAiVC = ChatViewController()
-        let accountVC = UIViewController()
-        accountVC.view.backgroundColor = .systemBackground
+        let chatWithAiVC = AiAssistentViewController()
         
-        let simultatorNav = UINavigationController(rootViewController: simulatorsVC)
-        let gamesAndTestsNav = UINavigationController(rootViewController: gamesAndTestsVC)
-        let chatWithAiNav = UINavigationController(rootViewController: chatWithAiVC)
-        let accountNav = UINavigationController(rootViewController: accountVC)
+        let accountVM = AccountViewModel()
+        let accountVC = AccountViewController(viewModel: accountVM)
         
-        simultatorNav.tabBarItem = UITabBarItem(
+        tabBar.tintColor = Colors.rose
+        simulatorsVC.tabBarItem = UITabBarItem(
             title: Texts.TabBar.simulatorTitle,
             image: UIImage(systemName: Texts.TabBar.simulatorIcon),
             selectedImage: UIImage(systemName: Texts.TabBar.selectedeSimulatorIcon)
         )
-        gamesAndTestsNav.tabBarItem = UITabBarItem (
+        gamesAndTestsVC.tabBarItem = UITabBarItem (
             title: Texts.TabBar.gamesAndTestsTitle,
             image: UIImage(systemName: Texts.TabBar.gamesAndTestsIcon),
             selectedImage: UIImage(systemName: Texts.TabBar.selectedGamesAndTestsIcon)
         )
-        chatWithAiNav.tabBarItem = UITabBarItem (
+        chatWithAiVC.tabBarItem = UITabBarItem (
             title: Texts.TabBar.chatWithAiTitile,
             image: UIImage(systemName: Texts.TabBar.chatWithAIIcon),
             selectedImage: UIImage(systemName: Texts.TabBar.selectedChatWithAiIcon)
         )
-        accountNav.tabBarItem = UITabBarItem (
+        accountVC.tabBarItem = UITabBarItem (
             title: Texts.TabBar.accountTitle,
             image: UIImage(systemName: Texts.TabBar.accountIcon),
             selectedImage: UIImage(systemName: Texts.TabBar.selectedAccountIcon)
         )
         
-        viewControllers = [simultatorNav, gamesAndTestsNav, chatWithAiNav, accountNav]
+        viewControllers = [simulatorsVC, gamesAndTestsVC, chatWithAiVC, accountVC]
     }
 }

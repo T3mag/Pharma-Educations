@@ -12,13 +12,10 @@ final class RegistrationViewModel {
     func register(email: String,
                   password: String,
                   confirmPassword: String,
-                  surname: String,
-                  name: String,
-                  lastname: String,
-                  birthday: String) {
+                  fullName: String) {
         
         guard !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty,
-              !surname.isEmpty, !name.isEmpty, !birthday.isEmpty else {
+              !fullName.isEmpty else {
             onError?(Texts.Errors.emptyString)
             return
         }
@@ -46,7 +43,7 @@ final class RegistrationViewModel {
     
     private func checkValidEmail(_ email: String) -> Bool {
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
-        let patern = Texts.Registration.emailPattern
+        let patern = RegistrationTexts.emailPattern
         return email.range(of: patern, options: .regularExpression) != nil
     }
     

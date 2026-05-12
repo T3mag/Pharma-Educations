@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let viewModel = LoginViewModel(authService: AuthService.shared)
         let loginViewController = LoginViewController(viewModel: viewModel)
-        let navigationController = UINavigationController(rootViewController: MainTabBarController())
+        let navigationController = UINavigationController(rootViewController: loginViewController)
         
         window.rootViewController = navigationController
         window.makeKeyAndVisible()

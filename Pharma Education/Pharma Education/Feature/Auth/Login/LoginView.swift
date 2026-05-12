@@ -6,14 +6,23 @@ final class LoginView: UIView {
                       _ password: String) -> Void)?
     var onRegisterTap: (() -> Void)?
     
-    private lazy var loginButtonContainer: UIView = AuxiliaryUIViews.stackViewContainer
+    private lazy var backgroundDesignView: UIView = BackgroundDesignView()
     
     private lazy var rootStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.distribution = .fill
+        stackView.spacing = 40
+        return stackView
+    }()
+    
+    private lazy var titleStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -23,7 +32,7 @@ final class LoginView: UIView {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        stackView.spacing = 10
+        stackView.spacing = 20
         return stackView
     }()
     
@@ -43,66 +52,73 @@ final class LoginView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
-        label.text = Texts.Login.title
-        label.numberOfLines = 5
-        label.textAlignment = .center
-        label.font = Fonts.Login.title
+        label.numberOfLines = 1
+        label.textAlignment = .left
+        label.text = LoginTexts.title
+        label.font = LoginFonts.titleFont
         
         return label
     }()
     
-    private lazy var loginTextFieldHeader: UILabel = {
-       let label = UILabel()
+    private lazy var subtitleLabel: UILabel = {
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .gray
-        label.text = Texts.Login.loginHeader
+        label.numberOfLines = 2
+        label.textAlignment = .left
+        label.text = LoginTexts.subtitle
+        label.font = LoginFonts.subtitleFont
         return label
     }()
     
     private lazy var loginTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Login.loginPlaceholder
+        textField.backgroundColor = .white
+        textField.placeholder = LoginTexts.loginPlaceholder
         textField.autocapitalizationType = .none
         textField.leftView = AuxiliaryUIViews.leftViewForTextField
         textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Login.cornerRadius
+        textField.layer.cornerRadius = LoginConstants.heightTextField / 2.5
         textField.clipsToBounds = true
         return textField
-    }()
-    
-    private lazy var passwordTextFieldHeader: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Login.passwordHeader
-        return label
     }()
     
     private lazy var passwordTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Login.passwordPlaceholder
+        textField.backgroundColor = .white
+        textField.placeholder = LoginTexts.passwordPlaceholder
         textField.autocapitalizationType = .none
         textField.configurePasswordToggle()
         textField.leftView = AuxiliaryUIViews.leftViewForTextField
         textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Login.cornerRadius
         textField.clipsToBounds = true
+        textField.layer.cornerRadius = LoginConstants.heightTextField / 2.5
         return textField
+    }()
+    
+    private lazy var forgotPassword: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(LoginTexts.forgotPassword, for: .normal)
+        button.backgroundColor = .none
+        button.setTitleColor(Colors.rose, for: .normal)
+        button.titleLabel?.numberOfLines = 2
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.font = LoginFonts.forgotPasswordButtonFont
+        return button
     }()
     
     private lazy var registrButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle(Texts.Login.registrationButton, for: .normal)
+        button.setTitle(LoginTexts.registrationButton, for: .normal)
         button.backgroundColor = .none
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.titleLabel?.numberOfLines = 2
         button.titleLabel?.textAlignment = .center
-        button.titleLabel?.font = Fonts.Login.registrationButtonFont
+        button.titleLabel?.font = LoginFonts.registrationButtonFont
         button.addTarget(self, action: #selector(registrationButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -110,12 +126,13 @@ final class LoginView: UIView {
     private lazy var loginButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .secondarySystemBackground
-        button.setTitle(Texts.Login.loginButton, for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = Fonts.Login.authorisationButtonFont
+        button.backgroundColor = Colors.rose
+        button.setTitle(LoginTexts.loginButton, for: .normal)
+        button.titleLabel?.font = LoginFonts.authorisationButtonFont
+        button.setTitleColor(.white, for: .normal)
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-        button.layer.cornerRadius = Constants.Login.cornerRadius
+        button.layer.cornerRadius = LoginConstants.cornerRadius
+        button.layer.cornerRadius = LoginConstants.heightButton / 3
         return button
     }()
     
@@ -133,47 +150,51 @@ final class LoginView: UIView {
     
     private func setupLayout() {
         
-        backgroundColor = .systemBackground
-        addSubview(rootStackView)
+        backgroundColor = Colors.lavenderBlush
         
         NSLayoutConstraint.activate([
+            backgroundDesignView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundDesignView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundDesignView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundDesignView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
             rootStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             rootStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor,
-                                                   constant: Constants.Login.indentsFromSafeArea),
+                                                   constant: LoginConstants.indentsFromSafeArea),
             rootStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor,
-                                                    constant: -Constants.Login.indentsFromSafeArea),
-            rootStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
-                                                  constant: -Constants.Login.indentsFromSafeArea)
+                                                    constant: -LoginConstants.indentsFromSafeArea)
         ])
         
         NSLayoutConstraint.activate([
-            topSpaceView.heightAnchor.constraint(equalTo: bottomSpaceView.heightAnchor, multiplier: 0.3),
+            passwordTextField.heightAnchor.constraint(equalToConstant: LoginConstants.heightTextField),
+            loginTextField.heightAnchor.constraint(equalToConstant: LoginConstants.heightTextField),
+            loginButton.heightAnchor.constraint(equalToConstant: LoginConstants.heightButton),
             
-            passwordTextField.heightAnchor.constraint(equalToConstant: Constants.Login.heightTextField),
-            loginTextField.heightAnchor.constraint(equalToConstant: Constants.Login.heightTextField),
-
-            loginButton.widthAnchor.constraint(equalTo: rootStackView.widthAnchor, multiplier: 0.8),
-            loginButton.heightAnchor.constraint(equalToConstant: Constants.Login.heightButton),
-            loginButton.centerXAnchor.constraint(equalTo: loginButtonContainer.centerXAnchor),
-            loginButton.topAnchor.constraint(equalTo: loginButtonContainer.topAnchor),
-            loginButton.bottomAnchor.constraint(equalTo: loginButtonContainer.bottomAnchor)
+            registrButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
+                                                  constant: -LoginConstants.indentsFromSafeArea),
+            registrButton.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor,
+                                                   constant: LoginConstants.indentsFromSafeArea),
+            registrButton.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor,
+                                                    constant: -LoginConstants.indentsFromSafeArea)
         ])
+        
     }
     
     private func setupHierarchy() {
-        loginButtonContainer.addSubview(loginButton)
+        addSubview(backgroundDesignView)
+        addSubview(rootStackView)
+        addSubview(registrButton)
         
-        rootStackView.addArrangedSubview(titleLabel)
-        rootStackView.addArrangedSubview(topSpaceView)
+        rootStackView.addArrangedSubview(titleStackView)
         rootStackView.addArrangedSubview(centreStackView)
-        rootStackView.addArrangedSubview(bottomSpaceView)
-        rootStackView.addArrangedSubview(loginButtonContainer)
+        rootStackView.addArrangedSubview(loginButton)
         
-        centreStackView.addArrangedSubview(loginTextFieldHeader)
+        titleStackView.addArrangedSubview(titleLabel)
+        titleStackView.addArrangedSubview(subtitleLabel)
+        
         centreStackView.addArrangedSubview(loginTextField)
-        centreStackView.addArrangedSubview(passwordTextFieldHeader)
         centreStackView.addArrangedSubview(passwordTextField)
-        centreStackView.addArrangedSubview(registrButton)
+        centreStackView.addArrangedSubview(forgotPassword)
     }
     
     @objc

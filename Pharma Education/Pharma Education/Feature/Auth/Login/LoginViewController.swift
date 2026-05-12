@@ -34,7 +34,9 @@ final class LoginViewController: UIViewController {
     
     private func setupActions() {
         contentView.onLoginTap = { [weak self] email, password in
-            self?.viewModel.auth(email: email, password: password)
+            let mainTabBarController = MainTabBarController()
+            self?.navigationController?.pushViewController(mainTabBarController, animated: true)
+            //self?.viewModel.auth(email: email, password: password)
         }
         
         contentView.onRegisterTap = { [weak self] in

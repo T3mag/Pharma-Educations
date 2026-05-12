@@ -3,7 +3,7 @@ import UIKit
 
 enum AuxiliaryUIViews {
     static var leftViewForTextField: UIView {
-        UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 0))
     }
     
     static var sendButton: UIButton {
@@ -12,8 +12,8 @@ enum AuxiliaryUIViews {
         button.backgroundColor = .tertiarySystemBackground
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
-        button.tintColor = .label
-        button.setImage(UIImage(systemName: "arrow.up"), for: .normal)
+        button.tintColor = .white
+        button.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
         return button
     }
     

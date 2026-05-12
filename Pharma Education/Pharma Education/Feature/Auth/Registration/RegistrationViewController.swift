@@ -25,15 +25,12 @@ final class RegistrationViewController: UIViewController {
     }
     
     private func setupActions() {
-        contentView.onRegisterTap = { [weak self] email, password, confirmPassword, surname, name, lastname, birthday in
+        contentView.onRegisterTap = { [weak self] email, password, confirmPassword, fullName in
             self?.viewModel.register(
                 email: email,
                 password: password,
                 confirmPassword: confirmPassword,
-                surname: surname,
-                name: name,
-                lastname: name,
-                birthday: birthday
+                fullName: fullName
             )
         }
     }

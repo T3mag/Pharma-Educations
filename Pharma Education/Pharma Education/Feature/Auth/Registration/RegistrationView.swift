@@ -5,24 +5,14 @@ final class RegistartionView: UIView {
     var onRegisterTap: ((_ email: String,
                          _ password: String,
                          _ confirmPassword: String,
-                         _ surname: String,
-                         _ name: String,
-                         _ lastName: String,
-                         _ birtday: String) -> Void)?
+                         _ fullname: String
+                        ) -> Void)?
+    
+    private var checkBoxFlag = false
     
     private lazy var registrationButtonContainer: UIView = AuxiliaryUIViews.stackViewContainer
     
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-
-    private lazy var contentView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    private lazy var backgroundDesign: UIView = BackgroundDesignView()
     
     private lazy var rootStackView: UIStackView = {
         let stackView = UIStackView()
@@ -30,19 +20,17 @@ final class RegistartionView: UIView {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
+        stackView.spacing = 40
         return stackView
     }()
     
-    private lazy var topSpaceView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private lazy var bottomSpaceView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    private lazy var topStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 10
+        return stackView
     }()
     
     private lazy var centreStackView: UIStackView = {
@@ -55,217 +43,97 @@ final class RegistartionView: UIView {
         return stackView
     }()
     
+    private lazy var policyStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.alignment = .leading
+        stackView.spacing = 10
+        return stackView
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = Fonts.Registration.title
-        label.text = Texts.Registration.title
+        label.font = RegistrationFonts.titleFont
+        label.text = RegistrationTexts.title
         label.textColor = .black
         label.textAlignment = .center
-        label.numberOfLines = 2
+        label.numberOfLines = 1
         return label
     }()
     
-    private lazy var surnameTextFieldHeader: UILabel = {
-       let label = UILabel()
+    private lazy var subtitleLabel: UILabel = {
+        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = RegistrationFonts.subtitleFont
+        label.text = RegistrationTexts.subtitle
         label.textColor = .gray
-        label.text = Texts.Registration.surnameHeader
+        label.textAlignment = .center
+        label.numberOfLines = 1
         return label
     }()
     
-    private lazy var surnameTextField: UITextField = {
+    private lazy var fullNameTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Registration.surnamePlaceholder
-        textField.autocapitalizationType = .none
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
+        textField.placeholder = RegistrationTexts.fullNamePlaceholder
         return textField
-    }()
-    
-    private lazy var nameTextFieldHeader: UILabel = {
-       let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Registration.nameHaeader
-        return label
-    }()
-    
-    private lazy var nameTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Registration.namePlaceholder
-        textField.autocapitalizationType = .none
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
-        return textField
-    }()
-    
-    private lazy var lastnameTextFieldHeader: UILabel = {
-       let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Registration.lastnameHeader
-        return label
-    }()
-    
-    private lazy var lastnameTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Registration.lastnamePlaceholder
-        textField.autocapitalizationType = .none
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
-        return textField
-    }()
-    
-    private lazy var emailTextFieldHeader: UILabel = {
-       let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Registration.emailHeader
-        return label
     }()
     
     private lazy var emailTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Registration.emailPlaceholder
-        textField.autocapitalizationType = .none
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
+        textField.placeholder = RegistrationTexts.emailPlaceholder
         return textField
-    }()
-    
-    private lazy var birthdayTextFieldHeader: UILabel = {
-       let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Registration.birthdayHeader
-        return label
-    }()
-    
-    private lazy var birthdateTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = Texts.Registration.birthdayPlaceholder
-        textField.inputView = datePicker
-        textField.inputAccessoryView = dateToolBar
-        textField.backgroundColor = .secondarySystemBackground
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
-        return textField
-    }()
-    
-    private lazy var passwordTextFieldHeader: UILabel = {
-       let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Registration.passwordHeader
-        return label
     }()
     
     private lazy var passwordTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Registration.passwordPlaceholder
-        textField.autocapitalizationType = .none
         textField.configurePasswordToggle()
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
+        textField.placeholder = RegistrationTexts.passwordPlaceholder
         return textField
-    }()
-    
-    private lazy var confirmPasswordTextFieldHeader: UILabel = {
-       let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .gray
-        label.text = Texts.Registration.repeatpasswordHeader
-        return label
     }()
     
     private lazy var confirmPasswordTextField: UITextField = {
         let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.backgroundColor = .secondarySystemBackground
-        textField.placeholder = Texts.Registration.repeatpasswordPlaceholder
-        textField.autocapitalizationType = .none
         textField.configurePasswordToggle()
-        textField.leftView = AuxiliaryUIViews.leftViewForTextField
-        textField.leftViewMode = .always
-        textField.layer.cornerRadius = Constants.Registration.cornerRadius
-        textField.clipsToBounds = true
+        textField.placeholder = RegistrationTexts.confirmPasswordPlaceholder
         return textField
     }()
     
-    private lazy var registartionButton: UIButton = {
-        let button = UIButton()
+    private lazy var checkBoxButton: UIButton = {
+        let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .secondarySystemBackground
-        button.setTitle(Texts.Registration.registrationButton, for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = Fonts.Registration.registrationButtonFont
-        button.addTarget(self, action: #selector(registrationButtonTapped), for: .touchUpInside)
-        button.layer.cornerRadius = Constants.Registration.cornerRadius
+        button.tintColor = Colors.rose
+        button.setImage(UIImage(systemName: "square"), for: .normal)
+        button.addTarget(self, action: #selector(checkBoxTapped), for: .touchUpInside)
         return button
     }()
     
-    private lazy var datePicker: UIDatePicker = {
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .wheels
-        datePicker.maximumDate = .now
-        datePicker.locale = Locale(identifier: "ru_RU")
-        return datePicker
+    private lazy var policyLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = RegistrationFonts.policyFont
+        label.text = RegistrationTexts.policyAgreement
+        label.textColor = .gray
+        label.numberOfLines = 2
+        return label
     }()
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
-        return formatter
-    }()
-    
-    private lazy var dateToolBar: UIToolbar = {
-        let toolBar = UIToolbar()
-        toolBar.sizeToFit()
-        
-        let doneButton = UIBarButtonItem(
-            title: "Готово",
-            style: .plain,
-            target: self,
-            action: #selector(doneDateTapped)
-        )
-
-        toolBar.items = [
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            doneButton
-        ]
-
-        return toolBar
-        
+    private lazy var registrationButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = Colors.rose
+        button.setTitle(RegistrationTexts.registrationButton, for: .normal)
+        button.titleLabel?.font = RegistrationFonts.registartionButtonFont
+        button.layer.cornerRadius = RegistrationConstants.heightButton / 3
+        button.addTarget(self, action: #selector(registrationButtonTapped), for: .touchUpInside)
+        return button
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        setupTextFields([fullNameTextField, emailTextField, passwordTextField, confirmPasswordTextField])
         setupHierarchy()
         setupLayout()
     }
@@ -274,86 +142,87 @@ final class RegistartionView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupLayout() {
-        backgroundColor = .systemBackground
+    private func setupTextFields(_ textFields: [UITextField]) {
+        for textField in textFields {
+            textField.translatesAutoresizingMaskIntoConstraints = false
+            textField.backgroundColor = .white
+            textField.autocapitalizationType = .none
+            textField.leftViewMode = .always
+            textField.clipsToBounds = true
+            textField.layer.cornerRadius = RegistrationConstants.heightTextField / 2.5
+            textField.leftView = AuxiliaryUIViews.leftViewForTextField
+        }
+    }
+    
+    private func setupLayout() {
+        backgroundColor = Colors.lavenderBlush
         
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-
-            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            backgroundDesign.topAnchor.constraint(equalTo: topAnchor),
+            backgroundDesign.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundDesign.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundDesign.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            rootStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            rootStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
-                                                   constant: Constants.Registration.indentsFromSafeArea),
-            rootStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,
-                                                    constant: -Constants.Registration.indentsFromSafeArea),
-            
-            rootStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,
-                                                  constant: -Constants.Registration.indentsFromSafeArea)
+            rootStackView.topAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.topAnchor,
+                constant: RegistrationConstants.indentsFromSafeArea),
+            rootStackView.leadingAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.leadingAnchor,
+                constant: RegistrationConstants.indentsFromSafeArea),
+            rootStackView.trailingAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.trailingAnchor,
+                constant: -RegistrationConstants.indentsFromSafeArea)
         ])
         
         NSLayoutConstraint.activate([
-            topSpaceView.heightAnchor.constraint(equalToConstant: Constants.Registration.indentsFromSafeArea),
-            bottomSpaceView.heightAnchor.constraint(equalToConstant: Constants.Registration.indentsFromSafeArea * 3),
-            
-            surnameTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            nameTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            lastnameTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            emailTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            birthdateTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            passwordTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            confirmPasswordTextField.heightAnchor.constraint(equalToConstant: Constants.Registration.heightTextField),
-            
-            registartionButton.widthAnchor.constraint(equalTo: rootStackView.widthAnchor, multiplier: 0.8),
-            registartionButton.heightAnchor.constraint(equalToConstant: Constants.Registration.heightButton),
-            registartionButton.centerXAnchor.constraint(equalTo: registrationButtonContainer.centerXAnchor),
-            registartionButton.topAnchor.constraint(equalTo: registrationButtonContainer.topAnchor),
-            registartionButton.bottomAnchor.constraint(equalTo: registrationButtonContainer.bottomAnchor)
+            fullNameTextField.heightAnchor.constraint(
+                equalToConstant: RegistrationConstants.heightTextField),
+            emailTextField.heightAnchor.constraint(
+                equalToConstant: RegistrationConstants.heightTextField),
+            passwordTextField.heightAnchor.constraint(
+                equalToConstant: RegistrationConstants.heightTextField),
+            confirmPasswordTextField.heightAnchor.constraint(
+                equalToConstant: RegistrationConstants.heightTextField),
+            checkBoxButton.heightAnchor.constraint(
+                equalToConstant: RegistrationConstants.checkBoxSize),
+            checkBoxButton.widthAnchor.constraint(
+                equalToConstant: RegistrationConstants.checkBoxSize),
+            registrationButton.heightAnchor.constraint(
+                equalToConstant: RegistrationConstants.heightButton)
         ])
     }
     
-    func setupHierarchy() {
-        addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        contentView.addSubview(rootStackView)
+    private func setupHierarchy() {
         
-        registrationButtonContainer.addSubview(registartionButton)
+        addSubview(backgroundDesign)
+        addSubview(rootStackView)
         
-        rootStackView.addArrangedSubview(titleLabel)
-        rootStackView.addArrangedSubview(topSpaceView)
+        rootStackView.addArrangedSubview(topStackView)
         rootStackView.addArrangedSubview(centreStackView)
-        rootStackView.addArrangedSubview(bottomSpaceView)
-        rootStackView.addArrangedSubview(registrationButtonContainer)
+        rootStackView.addArrangedSubview(registrationButton)
         
-        centreStackView.addArrangedSubview(surnameTextFieldHeader)
-        centreStackView.addArrangedSubview(surnameTextField)
-        centreStackView.addArrangedSubview(nameTextFieldHeader)
-        centreStackView.addArrangedSubview(nameTextField)
-        centreStackView.addArrangedSubview(lastnameTextFieldHeader)
-        centreStackView.addArrangedSubview(lastnameTextField)
-        centreStackView.addArrangedSubview(emailTextFieldHeader)
+        topStackView.addArrangedSubview(titleLabel)
+        topStackView.addArrangedSubview(subtitleLabel)
+        
+        centreStackView.addArrangedSubview(fullNameTextField)
         centreStackView.addArrangedSubview(emailTextField)
-        centreStackView.addArrangedSubview(birthdayTextFieldHeader)
-        centreStackView.addArrangedSubview(birthdateTextField)
-        centreStackView.addArrangedSubview(passwordTextFieldHeader)
         centreStackView.addArrangedSubview(passwordTextField)
-        centreStackView.addArrangedSubview(confirmPasswordTextFieldHeader)
         centreStackView.addArrangedSubview(confirmPasswordTextField)
+        centreStackView.addArrangedSubview(policyStackView)
+        
+        policyStackView.addArrangedSubview(checkBoxButton)
+        policyStackView.addArrangedSubview(policyLabel)
     }
-    
     
     @objc
-    private func doneDateTapped() {
-        birthdateTextField.text = dateFormatter.string(from: datePicker.date)
-        birthdateTextField.resignFirstResponder()
+    private func checkBoxTapped() {
+        if !checkBoxFlag {
+            checkBoxFlag = true
+            checkBoxButton.setImage(UIImage(systemName: "checkmark.square.fill"), for: .normal)
+        } else {
+            checkBoxFlag = false
+            checkBoxButton.setImage(UIImage(systemName: "square"), for: .normal)
+        }
     }
     
     @objc
@@ -362,11 +231,7 @@ final class RegistartionView: UIView {
             emailTextField.text ?? "",
             passwordTextField.text ?? "",
             confirmPasswordTextField.text ?? "",
-            surnameTextField.text ?? "",
-            nameTextField.text ?? "",
-            lastnameTextField.text ?? "",
-            birthdateTextField.text ?? ""
-            
+            fullNameTextField.text ?? ""
         )
     }
         
