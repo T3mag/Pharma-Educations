@@ -1,6 +1,12 @@
 import Foundation
 
-final class AIAssistentViewModel {
+protocol AIAssistentViewModelProtocol {
+    var onMessagesChangeed: (() -> Void)? { get set }
+    
+    func sendMessage(message: String)
+}
+
+final class AIAssistentViewModel: AIAssistentViewModelProtocol {
     
     var onMessagesChangeed: (() -> Void)?
     private(set) var testMessages: [ChatMessage] = [] {
@@ -25,7 +31,6 @@ final class AIAssistentViewModel {
         
         testMessages.append(userMessage)
         testMessages.append(botMessage)
-        print(testMessages)
     }
     
     private func currentTimeStaring() -> String {

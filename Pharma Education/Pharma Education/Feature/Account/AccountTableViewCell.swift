@@ -1,7 +1,7 @@
 
 import UIKit
 
-class AccountTableViewCell: UITableViewCell {
+final class AccountTableViewCell: UITableViewCell {
     
     static let reuseIdentifier = "AccauntTableViewCell"
     

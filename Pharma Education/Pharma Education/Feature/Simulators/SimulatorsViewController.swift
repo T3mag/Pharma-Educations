@@ -1,7 +1,7 @@
 
 import UIKit
 
-class SimulatorsViewController: UIViewController {
+final class SimulatorsViewController: UIViewController {
 
     private var viewModel: SimulatorsViewmodelProtocol
     private let contetntView = SimulatorsView()

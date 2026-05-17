@@ -1,6 +1,12 @@
 import Foundation
 
-final class RegistrationViewModel {
+protocol RegistrationViewModelProtocol {
+    var onError: ((String) -> Void)? {get set}
+    var onSuccess: (() -> Void)? {get set}
+    func register(email: String, password: String, confirmPassword: String, fullName: String)
+}
+
+final class RegistrationViewModel: RegistrationViewModelProtocol {
     private let authService: AuthServiceProtocol
     var onError: ((String) -> Void)?
     var onSuccess: (() -> Void)?

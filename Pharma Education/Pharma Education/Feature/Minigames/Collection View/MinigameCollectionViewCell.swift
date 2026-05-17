@@ -4,6 +4,15 @@ final class  MinigameCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "MinigameCollectionViewCell"
     
+    private let textStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = MinigameConstants.MiniGameCell.spacingBetweenTitleAndSubtitle
+        return stackView
+    }()
+    
     private let miniGameImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -16,9 +25,9 @@ final class  MinigameCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         label.textAlignment = .left
-        label.font = MinigameFonts.CollectionCell.titleFont
+        label.font = MinigameFonts.MiniGameCell.titleFont
         return label
     }()
     
@@ -26,18 +35,22 @@ final class  MinigameCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.textAlignment = .left
-        label.font = MinigameFonts.CollectionCell.subtitleFont
+        label.font = MinigameFonts.MiniGameCell.subtitleFont
         return label
     }()
     
     private let startButton: UIButton = {
         let button = UIButton()
+        let image = UIImage(systemName: "paperplane.fill")?
+            .withConfiguration(UIImage.SymbolConfiguration(
+                pointSize: MinigameConstants.MiniGameCell.buttonSize * 0.4))
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = Colors.lightRose
-        button.layer.cornerRadius = MinigameConstants.CollectionCell.buttonSize / 2
-        button.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
+        button.layer.cornerRadius = MinigameConstants.MiniGameCell.buttonSize / 2
+        button.setImage(image, for: .normal)
         button.tintColor = .white
         button.clipsToBounds = true
         return button
@@ -45,6 +58,7 @@ final class  MinigameCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupHierarchy()
         setupLayout()
     }
     
@@ -54,9 +68,18 @@ final class  MinigameCollectionViewCell: UICollectionViewCell {
         minigameSubtitleLabel.text = item.subtitle
     }
     
+    private func setupHierarchy() {
+        contentView.addSubview(miniGameImageView)
+        contentView.addSubview(textStackView)
+        contentView.addSubview(startButton)
+        
+        textStackView.addArrangedSubview(minigameTitleLabel)
+        textStackView.addArrangedSubview(minigameSubtitleLabel)
+    }
+    
     private func setupLayout() {
         backgroundColor = .white
-        let cornerRadius = bounds.width * MinigameConstants.CollectionCell.percentageOfCornerRounding
+        let cornerRadius = bounds.width * MinigameConstants.MiniGameCell.percentageOfCornerRounding
         
         contentView.layer.cornerRadius = cornerRadius
         contentView.layer.masksToBounds = true
@@ -64,58 +87,39 @@ final class  MinigameCollectionViewCell: UICollectionViewCell {
         layer.cornerRadius = cornerRadius
         layer.masksToBounds = false
         
-        contentView.addSubview(miniGameImageView)
-        contentView.addSubview(minigameTitleLabel)
-        contentView.addSubview(minigameSubtitleLabel)
-        contentView.addSubview(startButton)
-        
         NSLayoutConstraint.activate([
             
             miniGameImageView.topAnchor.constraint(
-                equalTo: contentView.topAnchor,
-                constant: MinigameConstants.CollectionCell.indentsFromContentView - 10),
+                equalTo: contentView.topAnchor),
             miniGameImageView.centerXAnchor.constraint(
                 equalTo: contentView.centerXAnchor),
             miniGameImageView.heightAnchor.constraint(
-                equalTo: contentView.heightAnchor,
-                multiplier: 0.6),
-            miniGameImageView.widthAnchor.constraint(
-                lessThanOrEqualTo: contentView.widthAnchor,
-                multiplier: 0.4),
+                lessThanOrEqualTo: contentView.heightAnchor,
+                multiplier: 0.5),
             
-            minigameTitleLabel.topAnchor.constraint(
+            textStackView.topAnchor.constraint(
                 equalTo: miniGameImageView.bottomAnchor,
-                constant: MinigameConstants.CollectionCell.spacingBetwewnImageAndTitle),
-            minigameTitleLabel.leadingAnchor.constraint(
+                constant: MinigameConstants.MiniGameCell.spacingBetwewnImageAndTitle),
+            textStackView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor,
-                constant: MinigameConstants.CollectionCell.indentsFromContentView),
-            minigameTitleLabel.trailingAnchor.constraint(
+                constant: MinigameConstants.MiniGameCell.indentsFromContentView),
+            textStackView.trailingAnchor.constraint(
                 equalTo: startButton.leadingAnchor,
-                constant: -MinigameConstants.CollectionCell.indentsFromContentView),
-            
-            minigameSubtitleLabel.topAnchor.constraint(
-                equalTo: minigameTitleLabel.bottomAnchor,
-                constant: MinigameConstants.CollectionCell.spacingBetweenTitleAndSubtitle),
-            minigameSubtitleLabel.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor,
-                constant: MinigameConstants.CollectionCell.indentsFromContentView),
-            minigameSubtitleLabel.trailingAnchor.constraint(
-                equalTo: startButton.leadingAnchor,
-                constant: -MinigameConstants.CollectionCell.indentsFromContentView),
-            minigameSubtitleLabel.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor,
-                constant: -MinigameConstants.CollectionCell.indentsFromContentView),
+                constant: -MinigameConstants.MiniGameCell.indentsFromContentView),
+            textStackView.bottomAnchor.constraint(
+                lessThanOrEqualTo: contentView.bottomAnchor,
+                constant: -MinigameConstants.MiniGameCell.indentsFromContentView),
             
             startButton.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor,
-                constant: -MinigameConstants.CollectionCell.indentsFromContentView),
+                constant: -MinigameConstants.MiniGameCell.indentsFromContentView),
             startButton.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor,
-                constant: -MinigameConstants.CollectionCell.indentsFromContentView),
+                constant: -MinigameConstants.MiniGameCell.indentsFromContentView),
             startButton.widthAnchor.constraint(
-                equalToConstant: MinigameConstants.CollectionCell.buttonSize),
+                equalToConstant: MinigameConstants.MiniGameCell.buttonSize),
             startButton.heightAnchor.constraint(
-                equalToConstant: MinigameConstants.CollectionCell.buttonSize)
+                equalToConstant: MinigameConstants.MiniGameCell.buttonSize)
         ])
     }
     

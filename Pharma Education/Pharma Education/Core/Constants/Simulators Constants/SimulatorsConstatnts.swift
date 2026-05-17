@@ -5,10 +5,12 @@ enum SimulatorsConstatnts {
         static let indentsFromSaveArea: CGFloat = 20
     }
     
-    enum GameCell {
-        static let indentsFromContentView: CGFloat = 20
+    enum SimulatorCell {
+        static let indentsFromImageView: CGFloat = 10
+        static let indentsFromContentView: CGFloat = 10
         static let heightImageView: CGFloat = 100
-        static let buttonSize: CGFloat = 40
+        static let buttonSize: CGFloat = 30
+        static let roundingPercentage: CGFloat = 0.2
     }
     
     enum TitleCell {

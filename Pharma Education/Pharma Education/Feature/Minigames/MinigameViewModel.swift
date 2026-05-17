@@ -1,12 +1,16 @@
 
-final class MinigameViewModel {
-    static var testGames: [MinigameItem] = [
-        MinigameItem(imageName: "Quizzes", title: "Quizzes", subtitle: "Test your knowledge" + "\n" + "with quick quizzes"),
-        MinigameItem(imageName: "MatchGames", title: "Quizzes", subtitle: "Test your knowledge with quick quizzes"),
-        MinigameItem(imageName: "FlashCards", title: "Quizzes", subtitle: "Test your knowledge" + "\n" + "with quick quizzes"),
-        MinigameItem(imageName: "FindError", title: "Quizzes", subtitle: "Test your knowledge with quick quizzes"),
-        MinigameItem(imageName: "DrugMemory", title: "Quizzes", subtitle: "Test your knowledge" + "\n" + "with quick quizzes"),
-        MinigameItem(imageName: "Time Challenge", title: "Quizzes", subtitle: "Test your knowledge with quick quizzes")
+protocol MinigameViewModelProtocol {
+    var testGames: [MinigameItem] { get }
+}
+
+final class MinigameViewModel: MinigameViewModelProtocol {
+    var testGames: [MinigameItem] = [
+        MinigameItem(imageName: "Quizzes", title: "Викторины", subtitle: "Проверьте свои знания с помощью коротких викторин."),
+        MinigameItem(imageName: "MatchGames", title: "Матчевая игра", subtitle: "Сопоставьте лекарства с их применением и эффектами."),
+        MinigameItem(imageName: "FlashCards", title: "Карточки", subtitle: "Повторите ключевые понятия с помощью интерактивных карточек."),
+        MinigameItem(imageName: "FindError", title: "Найдите ошибку", subtitle: "Выявляйте ошибки в рецептах."),
+        MinigameItem(imageName: "DrugMemory", title: "Память о лекарствах", subtitle: "Улучшите память, сопоставляя пары."),
+        MinigameItem(imageName: "Time Challenge", title: "Вызов времени", subtitle: "Отвечайте на вопросы на время.")
     ]
     
 }

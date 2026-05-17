@@ -3,9 +3,9 @@ import UIKit
 
 final class RegistrationViewController: UIViewController {
     private let contentView: RegistartionView = .init(frame: .zero)
-    private let viewModel: RegistrationViewModel
+    private var viewModel: RegistrationViewModelProtocol
     
-    init(viewModel: RegistrationViewModel = RegistrationViewModel()) {
+    init(viewModel: RegistrationViewModelProtocol = RegistrationViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

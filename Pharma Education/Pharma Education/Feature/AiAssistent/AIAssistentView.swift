@@ -1,7 +1,7 @@
 
 import UIKit
 
-final class AiAssistentView: UIView {
+final class AIAssistentView: UIView {
     
     var onSendTap: ((String) -> Void)?
     
@@ -34,7 +34,7 @@ final class AiAssistentView: UIView {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.backgroundColor = .white
         textField.autocapitalizationType = .none
-        textField.placeholder = AiAssistenConstatnts.GeneralTexts.messegeInputPlaceholder
+        textField.placeholder = AIAssistenTexts.General.messegeInputPlaceholder
         textField.layer.cornerRadius = AIAssistentConstants.General.heightTextField * AIAssistentConstants.General.percentageOfCurdling
         textField.leftView = AuxiliaryUIViews.leftViewForTextField
         textField.leftViewMode = .always

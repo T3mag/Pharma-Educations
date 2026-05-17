@@ -1,7 +1,12 @@
 
 import Foundation
 
-final class AccountViewModel {
+protocol AccountViewModelProtocol {
+    var stats: [AccountStatItem] { get }
+    var settings: [AccountStatItem] { get }
+}
+
+final class AccountViewModel: AccountViewModelProtocol {
     let stats: [AccountStatItem] = [
         AccountStatItem(title: "Дней без пропусков", icon: "flame.fill", accessory: .value("15 дней")),
         AccountStatItem(title: "Кол-во игр", icon: "gamecontroller.fill", accessory: .value("0")),

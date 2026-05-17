@@ -4,7 +4,9 @@ import UIKit
 final class MainTabBarController: UITabBarController {
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.isNavigationBarHidden = true
+        super.viewWillAppear(animated)
+
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     override func viewDidLoad() {
@@ -14,9 +16,9 @@ final class MainTabBarController: UITabBarController {
     
     private func setupTubs() {
         
-        let simulatorsVC = SimulatorsViewController()
+        let simulatorsVC = SimulatorsViewController() 
         let minagameVC = MinigameViewController()
-        let AiAssistentVC = AiAssistentViewController()
+        let AiAssistentVC = AIAssistentViewController()
         let accountVC = AccountViewController()
         
         tabBar.tintColor = Colors.rose

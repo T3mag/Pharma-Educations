@@ -29,12 +29,19 @@ final class SimulatorsView: UIView {
     
     private func setupLayout() {
         backgroundColor = Colors.lavenderBlush
+        addSubview(backgroundDesign)
         addSubview(tableView)
+
+        NSLayoutConstraint.activate([
+            backgroundDesign.topAnchor.constraint(equalTo: topAnchor),
+            backgroundDesign.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundDesign.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundDesign.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(
-                equalTo: safeAreaLayoutGuide.topAnchor,
-                constant: SimulatorsConstatnts.General.indentsFromSaveArea),
+                equalTo: topAnchor),
             tableView.leadingAnchor.constraint(
                 equalTo: safeAreaLayoutGuide.leadingAnchor,
                 constant: SimulatorsConstatnts.General.indentsFromSaveArea),
@@ -42,7 +49,8 @@ final class SimulatorsView: UIView {
                 equalTo: safeAreaLayoutGuide.trailingAnchor,
                 constant: -SimulatorsConstatnts.General.indentsFromSaveArea),
             tableView.bottomAnchor.constraint(
-                equalTo: safeAreaLayoutGuide.bottomAnchor)
+                equalTo: safeAreaLayoutGuide.bottomAnchor,
+                constant: -SimulatorsConstatnts.General.indentsFromSaveArea)
         ])
     }
     

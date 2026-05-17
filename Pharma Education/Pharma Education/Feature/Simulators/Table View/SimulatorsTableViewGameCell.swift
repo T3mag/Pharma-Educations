@@ -1,16 +1,15 @@
 
 import UIKit
 
-class SimulatorsTableViewGameCell: UITableViewCell {
+final class SimulatorsTableViewGameCell: UITableViewCell {
     
     static let reuseIdentifire = "SimulatorsTableViewGameCell"
     
-    private let buubleView: UIView = {
+    private let bubbleView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true
         view.backgroundColor = .white
-        view.layer.cornerRadius = 40
         return view
     }()
     
@@ -37,24 +36,30 @@ class SimulatorsTableViewGameCell: UITableViewCell {
         label.numberOfLines = 1
         label.textColor = .black
         label.textAlignment = .left
+        label.font = SimulatorsFonts.SimulatorCell.titleFont
         return label
     }()
     
     private lazy var simulatorSubtitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.textColor = .gray
         label.textAlignment = .left
+        label.font = SimulatorsFonts.SimulatorCell.subtitleFont
         return label
     }()
     
     private lazy var startButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
+        let image = UIImage(systemName: "paperplane.fill")?
+            .withConfiguration(UIImage.SymbolConfiguration(
+                pointSize: SimulatorsConstatnts.SimulatorCell.buttonSize * 0.4))
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = Colors.lightRose
-        button.layer.cornerRadius = SimulatorsConstatnts.GameCell.buttonSize / 2
-        button.setImage(UIImage(systemName: "paperplane.fill"), for: .normal)
+        button.layer.cornerRadius = SimulatorsConstatnts.SimulatorCell.buttonSize / 2
+        button.setImage(image, for: .normal)
         button.tintColor = .white
         button.clipsToBounds = true
         return button
@@ -66,6 +71,14 @@ class SimulatorsTableViewGameCell: UITableViewCell {
         setupLayout()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let cornerRadiusBubbleView = bubbleView.bounds.height * SimulatorsConstatnts.SimulatorCell.roundingPercentage
+        let cornerRadiusImageView = simulatorImageView.bounds.height * SimulatorsConstatnts.SimulatorCell.roundingPercentage
+        bubbleView.layer.cornerRadius = cornerRadiusBubbleView
+        simulatorImageView.layer.cornerRadius = cornerRadiusImageView
+    }
+    
     func configure(item: SimulatorItem) {
         simulatorImageView.image = UIImage(named: item.imageName)
         simulatorTitleLabel.text = item.title
@@ -73,10 +86,10 @@ class SimulatorsTableViewGameCell: UITableViewCell {
     }
     
     private func setupHierarhcy() {
-        contentView.addSubview(buubleView)
-        buubleView.addSubview(simulatorImageView)
-        buubleView.addSubview(titelStackView)
-        buubleView.addSubview(startButton)
+        contentView.addSubview(bubbleView)
+        bubbleView.addSubview(simulatorImageView)
+        bubbleView.addSubview(titelStackView)
+        bubbleView.addSubview(startButton)
         
         titelStackView.addArrangedSubview(simulatorTitleLabel)
         titelStackView.addArrangedSubview(simulatorSubtitleLabel)
@@ -87,54 +100,51 @@ class SimulatorsTableViewGameCell: UITableViewCell {
         backgroundColor = .clear
         
         NSLayoutConstraint.activate([
-            buubleView.topAnchor.constraint(
+            bubbleView.topAnchor.constraint(
                 equalTo: contentView.topAnchor,
                 constant: 10),
-            buubleView.bottomAnchor.constraint(
+            bubbleView.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor,
                 constant: -10),
-            buubleView.leadingAnchor.constraint(
+            bubbleView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor),
-            buubleView.trailingAnchor.constraint(
+            bubbleView.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([
             simulatorImageView.topAnchor.constraint(
-                equalTo: buubleView.topAnchor,
-                constant: SimulatorsConstatnts.GameCell.indentsFromContentView),
+                equalTo: bubbleView.topAnchor,
+                constant: SimulatorsConstatnts.SimulatorCell.indentsFromContentView),
             simulatorImageView.bottomAnchor.constraint(
-                equalTo: buubleView.bottomAnchor,
-                constant: -SimulatorsConstatnts.GameCell.indentsFromContentView),
+                equalTo: bubbleView.bottomAnchor,
+                constant: -SimulatorsConstatnts.SimulatorCell.indentsFromContentView),
             simulatorImageView.leadingAnchor.constraint(
-                equalTo: buubleView.leadingAnchor,
-                constant: SimulatorsConstatnts.GameCell.indentsFromContentView),
-            simulatorImageView.widthAnchor.constraint(
-                equalToConstant: SimulatorsConstatnts.GameCell.heightImageView),
+                equalTo: bubbleView.leadingAnchor,
+                constant: SimulatorsConstatnts.SimulatorCell.indentsFromContentView),
+            simulatorImageView.heightAnchor.constraint(lessThanOrEqualToConstant: SimulatorsConstatnts.SimulatorCell.heightImageView),
+            simulatorImageView.widthAnchor.constraint(equalTo: simulatorImageView.heightAnchor, multiplier: 4/3),
             
             titelStackView.topAnchor.constraint(
-                equalTo: buubleView.topAnchor,
-                constant: SimulatorsConstatnts.GameCell.indentsFromContentView),
-            titelStackView.bottomAnchor.constraint(
-                equalTo: buubleView.bottomAnchor,
-                constant: -SimulatorsConstatnts.GameCell.indentsFromContentView),
+                equalTo: simulatorImageView.topAnchor,
+                constant: SimulatorsConstatnts.SimulatorCell.indentsFromImageView),
             titelStackView.leadingAnchor.constraint(
                 equalTo: simulatorImageView.trailingAnchor,
-                constant: SimulatorsConstatnts.GameCell.indentsFromContentView),
+                constant: SimulatorsConstatnts.SimulatorCell.indentsFromImageView),
             titelStackView.trailingAnchor.constraint(
                 equalTo: startButton.leadingAnchor,
-                constant: -SimulatorsConstatnts.GameCell.indentsFromContentView),
+                constant: -SimulatorsConstatnts.SimulatorCell.indentsFromContentView),
             
             startButton.bottomAnchor.constraint(
-                equalTo: buubleView.bottomAnchor,
-                constant: -SimulatorsConstatnts.GameCell.indentsFromContentView),
+                equalTo: simulatorImageView.bottomAnchor,
+                constant: -SimulatorsConstatnts.SimulatorCell.indentsFromImageView),
             startButton.trailingAnchor.constraint(
-                equalTo: buubleView.trailingAnchor,
-                constant: -SimulatorsConstatnts.GameCell.indentsFromContentView),
+                equalTo: bubbleView.trailingAnchor,
+                constant: -SimulatorsConstatnts.SimulatorCell.indentsFromContentView),
             startButton.heightAnchor.constraint(
-                equalToConstant: SimulatorsConstatnts.GameCell.buttonSize),
+                equalToConstant: SimulatorsConstatnts.SimulatorCell.buttonSize),
             startButton.widthAnchor.constraint(
-                equalToConstant: SimulatorsConstatnts.GameCell.buttonSize)
+                equalToConstant: SimulatorsConstatnts.SimulatorCell.buttonSize)
         ])
     }
     

@@ -10,7 +10,7 @@ final class MinigameTitleCollectionViewCell: UICollectionViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = MinigameConstants.TitleCollectionCell.spacingStackview
+        stackView.spacing = MinigameConstants.TitleCell.spacingStackview
         return stackView
     }()
     
@@ -20,8 +20,8 @@ final class MinigameTitleCollectionViewCell: UICollectionViewCell {
         label.textColor = .black
         label.numberOfLines = 1
         label.textAlignment = .left
-        label.text = MinigameTexts.TitleCollectionCell.title
-        label.font = MinigameFonts.TitleCollectionCell.titleFont
+        label.text = MinigameTexts.TitleCell.title
+        label.font = MinigameFonts.TitleCell.titleFont
         return label
     }()
     
@@ -31,8 +31,8 @@ final class MinigameTitleCollectionViewCell: UICollectionViewCell {
         label.textColor = .gray
         label.numberOfLines = 2
         label.textAlignment = .left
-        label.text = MinigameTexts.TitleCollectionCell.subtitle
-        label.font = MinigameFonts.TitleCollectionCell.subtitleFont
+        label.text = MinigameTexts.TitleCell.subtitle
+        label.font = MinigameFonts.TitleCell.subtitleFont
         return label
     }()
     
@@ -53,7 +53,9 @@ final class MinigameTitleCollectionViewCell: UICollectionViewCell {
         backgroundColor = .clear
         
         NSLayoutConstraint.activate([            
-            titleStackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+            titleStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            titleStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            titleStackView.trailingAnchor.constraint(equalTo: trailingAnchor)
             
         ])
     }

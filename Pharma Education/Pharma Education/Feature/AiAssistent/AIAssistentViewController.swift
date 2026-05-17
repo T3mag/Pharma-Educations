@@ -1,15 +1,17 @@
 
 import UIKit
 
-class AiAssistentViewController: UIViewController {
+final class AIAssistentViewController: UIViewController {
     
-    private let contentView: AiAssistentView = .init(frame: .zero)
-    private var tableViewHandler: AiAssistentTableViewHandller
-    private let viewModel = AIAssistentViewModel()
+    private let contentView: AIAssistentView = .init(frame: .zero)
+    private var tableViewHandler: AIAssistentTableViewHandller
+    private let viewModel: AIAssistentViewModelProtocol
     
-    init() {
-        tableViewHandler = AiAssistentTableViewHandller(with: viewModel.testMessages)
-        super.init(nibName: nil, bundle: nil)
+    init(tableViewHandler: AIAssistentTableViewHandller = AIAssistentTableViewHandller(),
+         viewModel: AIAssistentViewModelProtocol = AIAssistentViewModel()
+    ) {
+        self.tableViewHandler = tableViewHandler
+        self.viewModel = viewModel
     }
     
     required init?(coder: NSCoder) {

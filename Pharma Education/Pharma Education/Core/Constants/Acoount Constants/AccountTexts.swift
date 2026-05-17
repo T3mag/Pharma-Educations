@@ -1,9 +1,3 @@
-//
-//  AccountTexts.swift
-//  Pharma Education
-//
-//  Created by Артур Миннушин on 13.05.2026.
-//
 
 enum AccountTexts {
     enum General {

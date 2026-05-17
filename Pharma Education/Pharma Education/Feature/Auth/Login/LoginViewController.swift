@@ -2,9 +2,9 @@ import UIKit
 
 final class LoginViewController: UIViewController {
     private let contentView: LoginView = .init(frame: .zero)
-    private let viewModel: LoginViewModel
+    private var viewModel: LoginViewModelProtocol
     
-    init(viewModel: LoginViewModel = LoginViewModel()) {
+    init(viewModel: LoginViewModelProtocol = LoginViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

@@ -3,12 +3,12 @@ import UIKit
 
 final class AccountViewController: UIViewController {
     private let contentView: AccountView = .init(frame: .zero)
-    private var viewModel: AccountViewModel
+    private var viewModel: AccountViewModelProtocol
     
     private let statsHandler: AccountTableHandler
     private let settingsHandler: AccountTableHandler
     
-    init(viewModel: AccountViewModel = AccountViewModel()) {
+    init(viewModel: AccountViewModelProtocol = AccountViewModel()) {
         self.viewModel = viewModel
         self.statsHandler = AccountTableHandler(items: viewModel.stats)
         self.settingsHandler = AccountTableHandler(items: viewModel.settings)

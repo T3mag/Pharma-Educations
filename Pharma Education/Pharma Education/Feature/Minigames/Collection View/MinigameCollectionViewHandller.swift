@@ -4,7 +4,11 @@ final class MinigameCollectionViewHandller: NSObject, UICollectionViewDataSource
     
     private var items: [ListItem<MinigameItem>] = [.title]
     
-    init(with minigames: [MinigameItem]) {
+    init(with minigames: [MinigameItem] = []) {
+        items = [.title] + minigames.map{ ListItem.item($0)}
+    }
+    
+    func updateMinigames(with minigames: [MinigameItem]) {
         items = [.title] + minigames.map{ ListItem.item($0)}
     }
     
@@ -48,10 +52,10 @@ final class MinigameCollectionViewHandller: NSObject, UICollectionViewDataSource
         
         switch items[indexPath.item] {
         case .title:
-            let spacing = MinigameConstants.TitleCollectionCell.spacingStackview
-            let indents = MinigameConstants.TitleCollectionCell.indentsFromContentView * 2
-            let titleFontSize = MinigameFonts.TitleCollectionCell.titleFont.lineHeight
-            let subtitleFontSize = MinigameFonts.TitleCollectionCell.subtitleFont.lineHeight * 2
+            let spacing = MinigameConstants.TitleCell.spacingStackview
+            let indents = MinigameConstants.TitleCell.indentsFromContentView * 2
+            let titleFontSize = MinigameFonts.TitleCell.titleFont.lineHeight
+            let subtitleFontSize = MinigameFonts.TitleCell.subtitleFont.lineHeight * 2
             
             let height = indents + titleFontSize + spacing + subtitleFontSize
             let width = collectionView.bounds.width

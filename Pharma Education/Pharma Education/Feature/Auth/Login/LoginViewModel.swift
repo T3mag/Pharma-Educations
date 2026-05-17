@@ -1,6 +1,12 @@
 import Foundation
 
-final class LoginViewModel {
+protocol LoginViewModelProtocol {
+    var onError: ((String) -> Void)? { get set }
+    var onSuccess: (() -> Void)? {get set}
+    func auth(email: String, password: String)
+}
+
+final class LoginViewModel: LoginViewModelProtocol {
     private let authService: AuthServiceProtocol
     var onError: ((String) -> Void)?
     var onSuccess: (() -> Void)?

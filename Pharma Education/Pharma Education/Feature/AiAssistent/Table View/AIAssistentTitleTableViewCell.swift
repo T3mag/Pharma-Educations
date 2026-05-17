@@ -16,7 +16,7 @@ final class AIAssistentTitleTableViewCell: UITableViewCell {
     private lazy var titleTextField: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = AiAssistenConstatnts.TitleCellTexts.title
+        label.text = AIAssistenTexts.TitleCell.title
         label.font = AIAssistentFonts.TitleCell.titleFont
         label.textColor = .black
         label.textAlignment = .center
@@ -28,7 +28,7 @@ final class AIAssistentTitleTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
         label.textAlignment = .center
-        label.text = AiAssistenConstatnts.TitleCellTexts.subtitile
+        label.text = AIAssistenTexts.TitleCell.subtitile
         label.font = AIAssistentFonts.TitleCell.subbtitleFont
         return label
     }()

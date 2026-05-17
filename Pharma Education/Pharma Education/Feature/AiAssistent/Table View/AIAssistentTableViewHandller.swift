@@ -1,11 +1,11 @@
 
 import UIKit
 
-final class AiAssistentTableViewHandller: NSObject, UITableViewDataSource, UITableViewDelegate {
+final class AIAssistentTableViewHandller: NSObject, UITableViewDataSource, UITableViewDelegate {
     
     private var items: [ListItem<ChatMessage>] = [.title]
     
-    init(with messages: [ChatMessage]) {
+    init(with messages: [ChatMessage] = []) {
         self.items = [.title] + messages.map{ ListItem.item($0) }
     }
     

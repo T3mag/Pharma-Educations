@@ -1,7 +1,7 @@
 
 import UIKit
 
-class SimulatorsTableViewTitleCell: UITableViewCell {
+final class SimulatorsTableViewTitleCell: UITableViewCell {
     static let reuseIdentifire = "SimulatorsTableViewTitleCell"
     
     private lazy var topStackView: UIStackView = {

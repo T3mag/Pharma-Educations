@@ -37,10 +37,6 @@ final class AIAssistentMessageTableViewCell: UITableViewCell {
         setupUI()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     func configure(with message: ChatMessage) {
         
         messageLabel.text = message.text
@@ -151,4 +147,7 @@ final class AIAssistentMessageTableViewCell: UITableViewCell {
         ])
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
