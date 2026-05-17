@@ -1,35 +1,34 @@
+
 import UIKit
 
-final class AIAssistentTitleTableViewCell: UITableViewCell {
-    
-    static let reuseIdentifire = "AIAssistentTitleCell"
+class SimulatorsTableViewTitleCell: UITableViewCell {
+    static let reuseIdentifire = "SimulatorsTableViewTitleCell"
     
     private lazy var topStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = AIAssistentConstants.TitleCell.topStackViewSpacing
+        stackView.alignment = .leading
+        stackView.spacing = SimulatorsConstatnts.TitleCell.topStackViewSpacing
         return stackView
     }()
     
     private lazy var titleTextField: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = AiAssistenConstatnts.TitleCellTexts.title
-        label.font = AIAssistentFonts.GeneralFonts.titleFont
         label.textColor = .black
-        label.textAlignment = .center
+        label.text = SimulatorsTexts.TitleCell.title
+        label.font = SimulatorsFonts.TitleCell.titleFont
         return label
     }()
     
     private lazy var subTitleTextFiled: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
-        label.textAlignment = .center
-        label.text = AiAssistenConstatnts.TitleCellTexts.subtitile
-        label.font = AIAssistentFonts.GeneralFonts.subbtitleFont
+        label.textColor = .gray
+        label.numberOfLines = 2
+        label.text = SimulatorsTexts.TitleCell.subtitile
+        label.font = SimulatorsFonts.TitleCell.subbtitleFont
         return label
     }()
     
@@ -59,7 +58,7 @@ final class AIAssistentTitleTableViewCell: UITableViewCell {
                 equalTo: trailingAnchor),
             topStackView.bottomAnchor.constraint(
                 equalTo: bottomAnchor,
-                constant: -AIAssistentConstants.TitleCell.indentsFromSafeArea)
+                constant: -SimulatorsConstatnts.TitleCell.indentsFromSafeArea)
         ])
     }
     
@@ -67,5 +66,3 @@ final class AIAssistentTitleTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-

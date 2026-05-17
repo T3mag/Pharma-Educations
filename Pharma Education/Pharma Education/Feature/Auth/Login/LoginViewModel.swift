@@ -5,7 +5,7 @@ final class LoginViewModel {
     var onError: ((String) -> Void)?
     var onSuccess: (() -> Void)?
     
-    init(authService: AuthServiceProtocol) {
+    init(authService: AuthServiceProtocol = AuthService()) {
         self.authService = authService
     }
     

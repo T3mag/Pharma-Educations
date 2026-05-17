@@ -33,7 +33,7 @@ final class LevelView: UIView {
     private lazy var progressBarView: UIProgressView = {
         let progressView = UIProgressView(progressViewStyle: .default)
         progressView.translatesAutoresizingMaskIntoConstraints = false
-        progressView.progress = 0.6
+        progressView.progress = 0
         progressView.progressTintColor = Colors.rose
         progressView.trackTintColor = .white
         progressView.transform = CGAffineTransform(scaleX: 1, y: 3)
@@ -61,8 +61,11 @@ final class LevelView: UIView {
         layer.cornerRadius = bounds.height * Constants.levelView.percentageOfCurdling
     }
     
-    public func setupColor() {
-        
+    func changeLevelViewInfo(currentLevel: Int, currentExp: Int, maxExpOnLevel: Int) {
+        levelLabel.text = Texts.LevelView.level + " " + "\(currentLevel)"
+        amountOfExperienceLabel.text = Texts.LevelView.exp + " " + "\(currentExp) / \(maxExpOnLevel)"
+        print(Float(currentExp / maxExpOnLevel))
+        progressBarView.progress = Float(Float(currentExp) / Float(maxExpOnLevel))
     }
     
     private func setupHierarchy() {

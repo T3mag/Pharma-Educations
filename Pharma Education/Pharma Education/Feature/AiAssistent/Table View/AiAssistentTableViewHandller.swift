@@ -3,14 +3,14 @@ import UIKit
 
 final class AiAssistentTableViewHandller: NSObject, UITableViewDataSource, UITableViewDelegate {
     
-    private var items: [AIAssistentTableItem] = [.title]
+    private var items: [ListItem<ChatMessage>] = [.title]
     
     init(with messages: [ChatMessage]) {
-        self.items = [.title] + messages.map{.message($0)}
+        self.items = [.title] + messages.map{ ListItem.item($0) }
     }
     
     func updateMessages(messages: [ChatMessage]) {
-        self.items = [.title] + messages.map{.message($0)}
+        self.items = [.title] + messages.map{ ListItem.item($0) }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -27,7 +27,7 @@ final class AiAssistentTableViewHandller: NSObject, UITableViewDataSource, UITab
                 return UITableViewCell()
             }
             return titleCell
-        case .message(let message):
+        case .item(let message):
             guard let messageCell = tableView.dequeueReusableCell(
                 withIdentifier: AIAssistentMessageTableViewCell.reuseIdentifire,
                 for: indexPath) as? AIAssistentMessageTableViewCell else {

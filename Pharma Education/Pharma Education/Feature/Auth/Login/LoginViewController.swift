@@ -4,7 +4,7 @@ final class LoginViewController: UIViewController {
     private let contentView: LoginView = .init(frame: .zero)
     private let viewModel: LoginViewModel
     
-    init(viewModel: LoginViewModel) {
+    init(viewModel: LoginViewModel = LoginViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -17,8 +17,13 @@ final class LoginViewController: UIViewController {
         view = contentView
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupActions()
         setupBindings()
     }

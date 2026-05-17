@@ -2,7 +2,9 @@
 import UIKit
 
 final class AccountView: UIView {
-
+    
+    var onLogoutTap: (() -> Void)?
+    
     private var statisticsTableViewHeightConstraint: NSLayoutConstraint?
     private var settingsTableViewHeightConstraint: NSLayoutConstraint?
 
@@ -26,7 +28,7 @@ final class AccountView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.spacing = Constants.AccountView.intervalBetweenStackViews
+        stackView.spacing = AccountConstants.General.intervalBetweenStackViews
         return stackView
     }()
     
@@ -35,7 +37,7 @@ final class AccountView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = Constants.AccountView.intervalInfoStackView
+        stackView.spacing = AccountConstants.General.intervalInfoStackView
         return stackView
     }()
     
@@ -44,7 +46,7 @@ final class AccountView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.spacing = Constants.AccountView.intervalButtonStackView
+        stackView.spacing = AccountConstants.General.intervalButtonStackView
         return stackView
     }()
     
@@ -54,8 +56,8 @@ final class AccountView: UIView {
         label.textColor = .black
         label.numberOfLines = 1
         label.textAlignment = .center
-        label.font = Fonts.AccountView.titleFont
-        label.text = Texts.Account.titleText
+        label.font = AccountFonts.General.titleFont
+        label.text = AccountTexts.General.titleText
         return label
     }()
     
@@ -66,8 +68,8 @@ final class AccountView: UIView {
         imageView.clipsToBounds = true
         imageView.backgroundColor = .secondarySystemBackground
         imageView.backgroundColor = .none
-        imageView.image = UIImage(systemName: Texts.Account.profileIcon)
-        imageView.layer.cornerRadius = Constants.AccountView.avatarSize / 2
+        imageView.image = UIImage(systemName: AccountTexts.General.profileIcon)
+        imageView.layer.cornerRadius = AccountConstants.General.avatarSize / 2
         imageView.tintColor = Colors.rose
         return imageView
     }()
@@ -77,9 +79,9 @@ final class AccountView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .black
         label.textAlignment = .center
-        label.numberOfLines = Constants.AccountView.textLines
-        label.text = Texts.Account.testName
-        label.font = Fonts.AccountView.nameFont
+        label.numberOfLines = AccountConstants.General.textLines
+        label.text = AccountTexts.General.testName
+        label.font = AccountFonts.General.nameFont
         return label
     }()
     
@@ -88,9 +90,9 @@ final class AccountView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .gray
         label.textAlignment = .center
-        label.numberOfLines = Constants.AccountView.textLines
-        label.text = Texts.Account.testBirthday
-        label.font = Fonts.AccountView.mailFont
+        label.numberOfLines = AccountConstants.General.textLines
+        label.text = AccountTexts.General.testBirthday
+        label.font = AccountFonts.General.mailFont
         return label
     }()
     
@@ -109,9 +111,11 @@ final class AccountView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .secondarySystemBackground
         button.setTitleColor(.white, for: .normal)
-        button.setTitle(Texts.Account.textExitButton, for: .normal)
-        button.layer.cornerRadius = Constants.AccountView.heightButton * Constants.AccountView.buttonRoundingPercentage
+        button.setTitle(AccountTexts.General.textExitButton, for: .normal)
+        button.titleLabel?.font = AccountFonts.General.logoutButtonFont
+        button.layer.cornerRadius = AccountConstants.General.heightButton * AccountConstants.General.buttonRoundingPercentage
         button.backgroundColor = Colors.rose
+        button.addTarget(self, action: #selector(logoutTap), for: .touchUpInside)
         return button
     }()
 
@@ -154,6 +158,7 @@ final class AccountView: UIView {
 
     private func setupLayout() {
         backgroundColor = Colors.lavenderBlush
+        levelView.changeLevelViewInfo(currentLevel: 10, currentExp: 10, maxExpOnLevel: 3045)
 
         statisticsTableViewHeightConstraint = statisticsTableView.heightAnchor.constraint(equalToConstant: 0)
         settingsTableViewHeightConstraint = settingsTableView.heightAnchor.constraint(equalToConstant: 0)
@@ -162,33 +167,47 @@ final class AccountView: UIView {
         settingsTableViewHeightConstraint?.isActive = true
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            scrollView.topAnchor.constraint(
+                equalTo: topAnchor),
+            scrollView.leadingAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(
+                equalTo: safeAreaLayoutGuide.trailingAnchor),
+            scrollView.bottomAnchor.constraint(
+                equalTo: bottomAnchor),
 
-            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.topAnchor.constraint(
+                equalTo: scrollView.contentLayoutGuide.topAnchor,
+                constant: AccountConstants.General.indentsFromSafeArea * 3),
+            contentView.leadingAnchor.constraint(
+                equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(
+                equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(
+                equalTo: scrollView.contentLayoutGuide.bottomAnchor,
+                constant: -AccountConstants.General.indentsFromSafeArea * 5),
+            contentView.widthAnchor.constraint(
+                equalTo: scrollView.frameLayoutGuide.widthAnchor),
 
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-
-            rootStackView.topAnchor.constraint(equalTo: contentView.topAnchor,
-                                               constant: Constants.AccountView.indentsFromSafeArea),
-            rootStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
-                                                   constant: Constants.AccountView.indentsFromSafeArea),
-            rootStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,
-                                                    constant: -Constants.AccountView.indentsFromSafeArea),
-            rootStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,
-                                                  constant: -Constants.AccountView.indentsFromSafeArea)
+            rootStackView.topAnchor.constraint(
+                equalTo: contentView.topAnchor,
+                constant: AccountConstants.General.indentsFromSafeArea),
+            rootStackView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor,
+                constant: AccountConstants.General.indentsFromSafeArea),
+            rootStackView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor,
+                constant: -AccountConstants.General.indentsFromSafeArea),
+            rootStackView.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor,
+                constant: -AccountConstants.General.indentsFromSafeArea)
         ])
 
         NSLayoutConstraint.activate([
-            profileImageView.widthAnchor.constraint(equalToConstant: Constants.AccountView.avatarSize),
-            profileImageView.heightAnchor.constraint(equalToConstant: Constants.AccountView.avatarSize),
+            profileImageView.widthAnchor.constraint(equalToConstant: AccountConstants.General.avatarSize),
+            profileImageView.heightAnchor.constraint(equalToConstant: AccountConstants.General.avatarSize),
 
-            exitButton.heightAnchor.constraint(equalToConstant: Constants.AccountView.heightButton)
+            exitButton.heightAnchor.constraint(equalToConstant: AccountConstants.General.heightButton)
         ])
     }
 
@@ -220,10 +239,14 @@ final class AccountView: UIView {
             tableView.showsVerticalScrollIndicator = false
             tableView.isScrollEnabled = false
             tableView.clipsToBounds = true
-            //tableView.rowHeight = Constants.AccountView.cellHeight
-            tableView.layer.cornerRadius = Constants.AccountView.tableViewCornerRadius
+            tableView.layer.cornerRadius = AccountConstants.General.tableViewCornerRadius
             tableView.register(AccountTableViewCell.self,
                                forCellReuseIdentifier: AccountTableViewCell.reuseIdentifier)
         }
+    }
+    
+    @objc
+    private func logoutTap() {
+        onLogoutTap?()
     }
 }

@@ -10,8 +10,6 @@ protocol AuthServiceProtocol {
 final class AuthService: AuthServiceProtocol {
     static let shared = AuthService()
     
-    private init() {}
-    
     func register(email: String, password: String, completion: @escaping(Result<User, Error>) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             if let error = error {

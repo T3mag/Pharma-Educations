@@ -5,7 +5,7 @@ final class RegistrationViewController: UIViewController {
     private let contentView: RegistartionView = .init(frame: .zero)
     private let viewModel: RegistrationViewModel
     
-    init(viewModel: RegistrationViewModel) {
+    init(viewModel: RegistrationViewModel = RegistrationViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

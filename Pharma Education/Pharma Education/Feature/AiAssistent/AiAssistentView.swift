@@ -5,6 +5,8 @@ final class AiAssistentView: UIView {
     
     var onSendTap: ((String) -> Void)?
     
+    private lazy var backgroundDesignView: UIView = BackgroundDesignView()
+    
     private lazy var messagesTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -85,12 +87,20 @@ final class AiAssistentView: UIView {
     }
     
     private func setupHierhacy() {
+        addSubview(backgroundDesignView)
         addSubview(messagesTableView)
         addSubview(messageInputTextField)
     }
     
     private func setupLayout() {
         backgroundColor = Colors.lavenderBlush
+        
+        NSLayoutConstraint.activate([
+            backgroundDesignView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundDesignView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundDesignView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundDesignView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
         
         NSLayoutConstraint.activate([
             

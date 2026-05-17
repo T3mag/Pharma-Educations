@@ -8,7 +8,7 @@ final class AccountViewController: UIViewController {
     private let statsHandler: AccountTableHandler
     private let settingsHandler: AccountTableHandler
     
-    init(viewModel: AccountViewModel) {
+    init(viewModel: AccountViewModel = AccountViewModel()) {
         self.viewModel = viewModel
         self.statsHandler = AccountTableHandler(items: viewModel.stats)
         self.settingsHandler = AccountTableHandler(items: viewModel.settings)
@@ -21,10 +21,16 @@ final class AccountViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.isNavigationBarHidden = true
         
+        setupActions()
         setupTableView()
         reloadContetnt()
+    }
+    
+    private func setupActions() {
+        contentView.onLogoutTap = {[weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
     
     private func setupTableView() {

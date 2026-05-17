@@ -130,22 +130,22 @@ final class AIAssistentMessageTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate([
             messageLabel.topAnchor.constraint(
                 equalTo: bubbleView.topAnchor,
-                constant: AIAssistentConstants.MessageCell.typingIndents),
+                constant: AIAssistentConstants.MessageCell.labelIndents),
             messageLabel.leadingAnchor.constraint(
                 equalTo: bubbleView.leadingAnchor,
-                constant: AIAssistentConstants.MessageCell.typingIndents),
+                constant: AIAssistentConstants.MessageCell.labelIndents),
             messageLabel.trailingAnchor.constraint(
                 equalTo: bubbleView.trailingAnchor,
-                constant: -AIAssistentConstants.MessageCell.typingIndents),
+                constant: -AIAssistentConstants.MessageCell.labelIndents),
             messageLabel.bottomAnchor.constraint(
                 equalTo: timeLabel.topAnchor,
-                constant: -AIAssistentConstants.MessageCell.typingIndents),
+                constant: -AIAssistentConstants.MessageCell.labelIndents),
             timeLabel.trailingAnchor.constraint(
                 equalTo: bubbleView.trailingAnchor,
-                constant: -AIAssistentConstants.MessageCell.typingIndents),
+                constant: -AIAssistentConstants.MessageCell.labelIndents),
             timeLabel.bottomAnchor.constraint(
                 equalTo: bubbleView.bottomAnchor,
-                constant: -AIAssistentConstants.MessageCell.typingIndents),
+                constant: -AIAssistentConstants.MessageCell.labelIndents),
             timeLabel.leadingAnchor.constraint(
                 equalTo: messageLabel.leadingAnchor)
         ])

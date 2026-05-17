@@ -61,11 +61,13 @@ class AccountTableViewCell: UITableViewCell {
         
         switch item.accessory {
         case .value(let value):
+            selectionStyle = .none
             valueLabel.text = value
             valueLabel.isHidden = false
         case .chevron:
             chevronImageView.isHidden = false
         case .switch:
+            selectionStyle = .none
             toggleSwitch.isHidden = false
         }
     }
