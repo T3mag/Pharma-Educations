@@ -1,0 +1,419 @@
+"""Build embeddings for retrieval-ready chunks with Sber EmbeddingsGigaR.
+
+The script solves the next preparation stage for the RAG pipeline:
+1. Reads retrieval-ready chunks from chunks.jsonl.
+2. Sends retrieval_text values to the GigaChat embeddings API.
+3. Stores embeddings together with the original chunk metadata in JSONL.
+4. Supports resumable execution by skipping already processed chunk_ids.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Iterable, Iterator, Optional
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+DEFAULT_INPUT_FILE = PROJECT_ROOT / "data" / "chunks.jsonl"
+
+DEFAULT_OUTPUT_FILE = PROJECT_ROOT / "data" / "chunk_embeddings_gigar.jsonl"
+
+DEFAULT_MODEL_NAME = "EmbeddingsGigaR"
+
+DEFAULT_BATCH_SIZE = 16
+
+DEFAULT_TIMEOUT_SECONDS = 600
+
+
+@dataclass
+class EmbeddingTask:
+    """Хранит входные данные для расчета embedding одного чанка."""
+
+    chunk_id: str
+
+    retrieval_text: str
+
+    chunk_record: dict[str, Any]
+
+
+def parse_arguments() -> argparse.Namespace:
+    """Разбирает аргументы командной строки и возвращает конфигурацию запуска скрипта."""
+
+    parser = argparse.ArgumentParser(
+        description="Build embeddings for chunks.jsonl with EmbeddingsGigaR.",
+    )
+
+    parser.add_argument(
+        "--input-file",
+        type=Path,
+        default=DEFAULT_INPUT_FILE,
+        help="Path to chunks.jsonl.",
+    )
+
+    parser.add_argument(
+        "--output-file",
+        type=Path,
+        default=DEFAULT_OUTPUT_FILE,
+        help="Path to output JSONL with embeddings.",
+    )
+
+    parser.add_argument(
+        "--model",
+        type=str,
+        default=DEFAULT_MODEL_NAME,
+        help="GigaChat embedding model name.",
+    )
+
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=DEFAULT_BATCH_SIZE,
+        help="Number of texts per embeddings request.",
+    )
+
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        help="Request timeout in seconds.",
+    )
+
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Optional limit of chunks to process.",
+    )
+
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip chunk_ids that already exist in the output file.",
+    )
+
+    parser.add_argument(
+        "--verify-ssl-certs",
+        action="store_true",
+        help="Enable SSL certificate verification for GigaChat requests.",
+    )
+
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Do not call API, only validate and count pending chunks.",
+    )
+
+    return parser.parse_args()
+
+
+def load_jsonl_records(input_file: Path, limit: Optional[int] = None) -> Iterator[dict[str, Any]]:
+    """Читает JSONL-файл и возвращает записи по одной."""
+
+    with input_file.open("r", encoding="utf-8") as input_stream:
+        for line_index, line in enumerate(input_stream, start=1):
+            if limit is not None and line_index > limit:
+                break
+
+            record = json.loads(line)
+            yield record
+
+
+def load_processed_chunk_ids(output_file: Path) -> set[str]:
+    """Читает существующий output JSONL и возвращает множество уже обработанных chunk_id."""
+
+    if not output_file.exists():
+        return set()
+
+    processed_chunk_ids: set[str] = set()
+
+    with output_file.open("r", encoding="utf-8") as output_stream:
+        for line in output_stream:
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            chunk_id = record.get("chunk_id")
+            if isinstance(chunk_id, str) and chunk_id:
+                processed_chunk_ids.add(chunk_id)
+
+    return processed_chunk_ids
+
+
+def iter_pending_tasks(
+    input_file: Path,
+    processed_chunk_ids: set[str],
+    limit: Optional[int] = None,
+) -> Iterator[EmbeddingTask]:
+    """Возвращает только те чанки, для которых embedding еще не был сохранен."""
+
+    for chunk_record in load_jsonl_records(input_file=input_file, limit=limit):
+        chunk_id = chunk_record.get("chunk_id", "")
+
+        retrieval_text = chunk_record.get("retrieval_text", "")
+
+        if not isinstance(chunk_id, str) or not chunk_id:
+            continue
+        if not isinstance(retrieval_text, str) or not retrieval_text.strip():
+            continue
+        if chunk_id in processed_chunk_ids:
+            continue
+
+        yield EmbeddingTask(
+            chunk_id=chunk_id,
+            retrieval_text=retrieval_text,
+            chunk_record=chunk_record,
+        )
+
+
+def batched(items: Iterable[EmbeddingTask], batch_size: int) -> Iterator[list[EmbeddingTask]]:
+    """Разбивает поток задач на батчи фиксированного размера."""
+
+    batch: list[EmbeddingTask] = []
+
+    for item in items:
+        batch.append(item)
+        if len(batch) >= batch_size:
+            yield batch
+            batch = []
+
+    if batch:
+        yield batch
+
+
+def build_gigachat_client(credentials: str, timeout: int, verify_ssl_certs: bool) -> Any:
+    """Создает клиента GigaChat через официальный Python SDK."""
+
+    try:
+        from gigachat import GigaChat
+    except ImportError as import_error:
+        raise RuntimeError(
+            "Пакет 'gigachat' не установлен. Установите его командой 'pip install gigachat'."
+        ) from import_error
+
+    client = GigaChat(
+        credentials=credentials,
+        timeout=timeout,
+        verify_ssl_certs=verify_ssl_certs,
+    )
+
+    return client
+
+
+def extract_embedding_items(response: Any) -> list[Any]:
+    """Извлекает список элементов embeddings из ответа SDK в максимально безопасной форме."""
+
+    data_items = getattr(response, "data", None)
+    if data_items is not None:
+        return list(data_items)
+
+    if isinstance(response, dict):
+        dict_data_items = response.get("data")
+        if isinstance(dict_data_items, list):
+            return dict_data_items
+
+    raise RuntimeError("Не удалось извлечь поле 'data' из ответа embeddings API GigaChat.")
+
+
+def extract_embedding_vector(item: Any) -> list[float]:
+    """Извлекает числовой вектор embedding из одного элемента ответа API."""
+
+    embedding_value = getattr(item, "embedding", None)
+    if embedding_value is None and isinstance(item, dict):
+        embedding_value = item.get("embedding")
+
+    if not isinstance(embedding_value, list):
+        raise RuntimeError("Не удалось извлечь список чисел из поля 'embedding'.")
+
+    return [float(value) for value in embedding_value]
+
+
+def request_embeddings(client: Any, texts: list[str], model_name: str) -> list[list[float]]:
+    """Отправляет батч текстов в embeddings API и возвращает список векторов в исходном порядке."""
+
+    response = client.embeddings(texts, model=model_name)
+
+    response_items = extract_embedding_items(response)
+
+    if len(response_items) != len(texts):
+        raise RuntimeError(
+            f"Число embeddings в ответе ({len(response_items)}) не совпадает с числом текстов ({len(texts)})."
+        )
+
+    embedding_vectors = [extract_embedding_vector(item) for item in response_items]
+
+    return embedding_vectors
+
+
+def serialize_embedding_record(
+    task: EmbeddingTask,
+    embedding_vector: list[float],
+    model_name: str,
+) -> dict[str, Any]:
+    """Собирает одну запись результата для output JSONL."""
+
+    embedding_record = {
+        "chunk_id": task.chunk_id,
+        "model": model_name,
+        "vector_size": len(embedding_vector),
+        "embedding": embedding_vector,
+        "chunk_record": task.chunk_record,
+    }
+
+    return embedding_record
+
+
+def ensure_credentials() -> str:
+    """Читает ключ авторизации GigaChat из переменных окружения."""
+
+    credentials = os.environ.get("GIGACHAT_CREDENTIALS", "").strip()
+
+    if not credentials:
+        raise RuntimeError(
+            "Не найден ключ авторизации GigaChat. Установите переменную окружения GIGACHAT_CREDENTIALS."
+        )
+
+    return credentials
+
+
+def write_embeddings(
+    output_file: Path,
+    records: Iterable[dict[str, Any]],
+    append_mode: bool,
+) -> int:
+    """Записывает embeddings в JSONL и возвращает число сохраненных строк."""
+
+    output_directory = output_file.parent
+    output_directory.mkdir(parents=True, exist_ok=True)
+
+    file_mode = "a" if append_mode else "w"
+
+    written_rows = 0
+
+    with output_file.open(file_mode, encoding="utf-8") as output_stream:
+        for record in records:
+            serialized_record = json.dumps(record, ensure_ascii=False)
+            output_stream.write(serialized_record + "\n")
+            written_rows += 1
+
+    return written_rows
+
+
+def build_embedding_records(
+    tasks: Iterable[EmbeddingTask],
+    client: Any,
+    model_name: str,
+    batch_size: int,
+) -> Iterator[dict[str, Any]]:
+    """Строит поток записей embeddings, батчами вызывая официальный API GigaChat."""
+
+    for task_batch in batched(items=tasks, batch_size=batch_size):
+        batch_texts = [task.retrieval_text for task in task_batch]
+
+        batch_vectors = request_embeddings(
+            client=client,
+            texts=batch_texts,
+            model_name=model_name,
+        )
+
+        for task, embedding_vector in zip(task_batch, batch_vectors):
+            yield serialize_embedding_record(
+                task=task,
+                embedding_vector=embedding_vector,
+                model_name=model_name,
+            )
+
+
+def count_pending_tasks(
+    input_file: Path,
+    output_file: Path,
+    resume: bool,
+    limit: Optional[int],
+) -> tuple[int, set[str]]:
+    """Считает число необработанных задач и возвращает также множество уже готовых chunk_id."""
+
+    processed_chunk_ids = load_processed_chunk_ids(output_file) if resume else set()
+
+    pending_count = 0
+
+    for _task in iter_pending_tasks(
+        input_file=input_file,
+        processed_chunk_ids=processed_chunk_ids,
+        limit=limit,
+    ):
+        pending_count += 1
+
+    return pending_count, processed_chunk_ids
+
+
+def main() -> None:
+    """Запускает полный конвейер расчета embeddings для retrieval-ready чанков."""
+
+    arguments = parse_arguments()
+
+    input_file = arguments.input_file.resolve()
+
+    output_file = arguments.output_file.resolve()
+
+    pending_count, processed_chunk_ids = count_pending_tasks(
+        input_file=input_file,
+        output_file=output_file,
+        resume=arguments.resume,
+        limit=arguments.limit,
+    )
+
+    if arguments.dry_run:
+        summary_message = (
+            f"Dry run: pending chunks = {pending_count}, "
+            f"already processed chunk_ids = {len(processed_chunk_ids)}."
+        )
+        print(summary_message)
+        return
+
+    if pending_count == 0:
+        print("Нет новых чанков для расчета embeddings.")
+        return
+
+    credentials = ensure_credentials()
+
+    client = build_gigachat_client(
+        credentials=credentials,
+        timeout=arguments.timeout,
+        verify_ssl_certs=arguments.verify_ssl_certs,
+    )
+
+    pending_tasks = iter_pending_tasks(
+        input_file=input_file,
+        processed_chunk_ids=processed_chunk_ids,
+        limit=arguments.limit,
+    )
+
+    embedding_records = build_embedding_records(
+        tasks=pending_tasks,
+        client=client,
+        model_name=arguments.model,
+        batch_size=arguments.batch_size,
+    )
+
+    append_mode = arguments.resume and output_file.exists()
+
+    written_rows = write_embeddings(
+        output_file=output_file,
+        records=embedding_records,
+        append_mode=append_mode,
+    )
+
+    summary_message = (
+        f"Saved {written_rows} embeddings to '{output_file}' "
+        f"with model '{arguments.model}'."
+    )
+    print(summary_message)
+
+
+if __name__ == "__main__":
+    main()
